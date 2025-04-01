@@ -24,15 +24,15 @@ jobs:
 
       - name: Terraform init
         id: init
-        run: terraform init -backend=false
+        run: terraform init -backend=false -no-color
 
       - name: Terraform validate
         id: validate
-        run: terraform validate
+        run: terraform validate -no-color
 
       - name: Check formatting
         id: fmt
-        run: terraform fmt -check
+        run: terraform fmt -check -no-color
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
