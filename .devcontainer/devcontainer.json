@@ -24,7 +24,11 @@
 					"editor.tabSize": 2
 				},
 				"terminal.integrated.scrollback": 20000
-			}
+			},
+			"extensions": [
+				"GitHub.vscode-github-actions",
+				"GitHub.vscode-pull-request-github"
+			]
 		}
 	},
 	"mounts": [
