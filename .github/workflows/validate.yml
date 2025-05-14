@@ -17,6 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get GH App Token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID_TF_PRIVATE_MODULE }}
+          private-key: ${{ secrets.PRIVATE_KEY_TF_PRIVATE_MODULE }}
+          owner: ${{ github.repository_owner }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -24,7 +32,9 @@ jobs:
 
       - name: Terraform init
         id: init
-        run: terraform init -backend=false -no-color
+        run: |
+          git config --global url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/".insteadOf "https://github.com/"
+          terraform init -backend=false -no-color
 
       - name: Terraform validate
         id: validate
@@ -33,6 +43,11 @@ jobs:
       - name: Check formatting
         id: fmt
         run: terraform fmt -check -no-color
+  
+      - name: Run tflint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          tflint
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
